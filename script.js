@@ -2,6 +2,7 @@ let currentAge = 0;
 let currentPhase = "birth";
 let playerCountry = null;
 let awaitingChoice = false;
+let chosenOutcomes = [];
 
 const scenariosByPhase = {
   childhood: [
@@ -157,30 +158,40 @@ function addEntry(text, isHeader = false) {
   entry.textContent = text;
   if (isHeader) entry.style.fontWeight = "bold";
   log.insertBefore(entry, log.firstChild);
+  return entry; 
 }
 
-function showChoices(scenario, onComplete) {
+function showChoices(scenario, phaseHeader, onComplete) {
   const log = document.getElementById("life-log");
-  const button = document.querySelector(".birth-button");
+  const button = document.getElementById("main-action-btn");
   button.disabled = true;
   awaitingChoice = true;
 
   const promptEl = document.createElement("p");
   promptEl.textContent = scenario.prompt;
   promptEl.style.fontStyle = "italic";
-  log.insertBefore(promptEl, log.firstChild);
+  log.insertBefore(promptEl, phaseHeader);
 
   const choiceContainer = document.createElement("div");
-
   scenario.choices.forEach((choice) => {
     const btn = document.createElement("button");
     btn.textContent = choice.text;
     btn.style.marginRight = "10px";
 
     btn.addEventListener("click", () => {
+      // Log the outcome for the results screen
+      chosenOutcomes.push(choice.outcome);
 
-      addEntry(`➤ You chose: "${choice.text}"`);
-      addEntry(`Outcome: ${choice.outcome}`);
+      log.removeChild(choiceContainer);
+      log.removeChild(promptEl);
+
+      const outcomeEl = document.createElement("p");
+      outcomeEl.textContent = `Outcome: ${choice.outcome}`;
+      log.insertBefore(outcomeEl, phaseHeader);
+
+      const choiceEl = document.createElement("p");
+      choiceEl.textContent = `➤ You chose: "${choice.text}"`;
+      log.insertBefore(choiceEl, phaseHeader);
 
       awaitingChoice = false;
       button.disabled = false;
@@ -190,17 +201,17 @@ function showChoices(scenario, onComplete) {
     choiceContainer.appendChild(btn);
   });
 
-  log.insertBefore(choiceContainer, log.firstChild);
+  log.insertBefore(choiceContainer, phaseHeader);
 }
 
-function runScenarios(scenarios, index, onAllDone) {
+function runScenarios(scenarios, index, phaseHeader, onAllDone) {
   if (index >= scenarios.length) {
     onAllDone();
     return;
   }
 
-  showChoices(scenarios[index], () => {
-    runScenarios(scenarios, index + 1, onAllDone);
+  showChoices(scenarios[index], phaseHeader, () => {
+    runScenarios(scenarios, index + 1, phaseHeader, onAllDone);
   });
 }
 
@@ -224,15 +235,21 @@ async function getRandomCountry() {
 
 async function handleBirth() {
   playerCountry = await getRandomCountry();
+  
+  
+  addEntry(`Population: ${playerCountry.populationCounts.value.toLocaleString()} in ${playerCountry.populationCounts.year}`);
+  document.getElementById("life-log").lastElementChild?.scrollIntoView({ behavior: "smooth" });
 
   addEntry(`Country: ${playerCountry.country} (${playerCountry.code})`);
-  addEntry(`Population: ${playerCountry.populationCounts.value.toLocaleString()} in ${playerCountry.populationCounts.year}`);
+  document.getElementById("life-log").lastElementChild?.scrollIntoView({ behavior: "smooth" });
+  
   addEntry(`— You were born —`, true);
+  document.getElementById("life-log").lastElementChild?.scrollIntoView({ behavior: "smooth" });
 
   currentPhase = "childhood";
   currentAge = 0;
 
-  const button = document.querySelector(".birth-button");
+  const button = document.getElementById("main-action-btn");
   button.textContent = "Age";
   button.removeEventListener("click", handleBirth);
   button.addEventListener("click", handleAge);
@@ -241,7 +258,7 @@ async function handleBirth() {
 function handleAge() {
   if (awaitingChoice) return;
 
-  const button = document.querySelector(".birth-button");
+  const button = document.getElementById("main-action-btn");
   let phaseKey;
 
   if (currentPhase === "childhood") {
@@ -265,17 +282,55 @@ function handleAge() {
   const scenarios = getRandomScenarios(scenariosByPhase[phaseKey]);
   const phaseName = getPhaseName(currentAge);
 
-  addEntry(`— ${phaseName} (Age ${currentAge}) —`, true);
+  const headerEl = addEntry(`— ${phaseName} (Age ${currentAge}) —`, true);
+  document.getElementById("life-log").lastElementChild?.scrollIntoView({ behavior: "smooth" });
 
-  runScenarios(scenarios, 0, () => {
+  runScenarios(scenarios, 0, headerEl, () => {
     if (currentPhase === "dead") {
-      addEntry(`— You passed away at age ${currentAge}. Game over. —`, true);
-      button.textContent = "Play Again";
-      button.removeEventListener("click", handleAge);
-      button.addEventListener("click", () => location.reload(), { once: true });
+        showResultsScreen();
     }
   });
 }
 
-const button = document.querySelector(".birth-button");
-button.addEventListener("click", handleBirth, { once: true });
+function showResultsScreen() {
+    function showResultsScreen() {
+    // Pick ONLY from young adulthood outcomes
+    let randomEvent = "Lived a quiet and uneventful life.";
+
+    if (getPhaseKey(currentAge) === "youngAdulthood") {
+    chosenOutcomes.push(choice.outcome);
+}
+
+    // Save data to localStorage
+    localStorage.setItem("report_country", playerCountry.country);
+    localStorage.setItem("report_age", currentAge);
+    localStorage.setItem("report_year", "2018");
+    localStorage.setItem("report_event", randomEvent);
+
+    // Redirect to report page
+    window.location.href = "report.html";
+}
+}
+
+function resetGame() {
+    
+    // Reset Data
+    document.getElementById("life-log").innerHTML = "";
+    currentAge = 0;
+    currentPhase = "birth";
+    playerCountry = null;
+    awaitingChoice = false;
+    chosenOutcomes = [];
+    
+    // Reset the main button
+    const button = document.getElementById("main-action-btn");
+    button.textContent = "Take Birth!";
+    button.removeEventListener("click", handleAge);
+    button.addEventListener("click", handleBirth, { once: true });
+}
+
+// Initial Listeners
+const mainBtn = document.getElementById("main-action-btn");
+mainBtn.addEventListener("click", handleBirth, { once: true });
+
+// If we're on report.html, load saved data

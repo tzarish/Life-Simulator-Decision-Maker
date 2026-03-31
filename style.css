@@ -1,0 +1,189 @@
+/*
+    maroon: #800000
+    gray: #1d1e22
+    silver: #bfbfbf
+*/
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: #1d1e22;
+  color: #bfbfbf;
+  line-height: 1.6;
+  padding: 40px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+h1 {
+  font-size: 2.4rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+  letter-spacing: -0.5px;
+  animation: fadeSlide 0.6s ease forwards;
+}
+
+.screen > p {
+  max-width: 600px;
+  text-align: center;
+  color: #9aa3b2;
+  margin-bottom: 20px;
+  animation: fadeSlide 0.6s ease forwards;
+}
+
+.birth-button {
+  margin-bottom: 30px;
+  padding: 12px 26px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 999px;
+  background: #f8b195;
+  color: black;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.birth-button:hover {
+  background: #f89a75;
+  transform: translateY(-2px);
+}
+
+.birth-button:active {
+  transform: scale(0.96);
+}
+
+.birth-button:disabled {
+  cursor: not-allowed;
+}
+
+#life-log {
+  width: 100%;
+  max-width: 650px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+#life-log p {
+  background: #f8b195;
+  padding: 12px 16px;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  opacity: 0;
+  transform: translateY(-8px);
+  animation: entryIn 0.35s ease forwards;
+  color: black;
+}
+
+#life-log p[style*="font-weight: bold"] {
+  background: transparent;
+  padding: 6px 2px;
+  font-size: 0.8rem;
+  letter-spacing: 1px;
+  color: #ececec;
+  text-transform: uppercase;
+  border-left: 2px solid #bfbfbf;
+  padding-left: 10px;
+}
+
+#life-log p[style*="italic"] {
+  background: #355c7d;
+  color: #e4e4e4;
+}
+
+#life-log div {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  animation: fadeSlide 0.3s ease forwards;
+}
+
+#life-log div button {
+  flex: 1;
+  min-width: 120px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: none;
+  background: #01590b;
+  color: #dfe6ff;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+#life-log div button:hover {
+  background: #2f3545;
+  transform: translateY(-1px);
+}
+
+#life-log div button:active {
+  transform: scale(0.97);
+}
+
+/* Results Screen Styling */
+.report-card {
+  background: #2a2b30;
+  padding: 25px;
+  border-radius: 12px;
+  margin-bottom: 30px;
+  width: 100%;
+  max-width: 500px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+  border-top: 4px solid #f8b195;
+  animation: fadeSlide 0.5s ease forwards;
+}
+
+.report-card p {
+  margin-bottom: 10px;
+  font-size: 1.1rem;
+  color: #ececec;
+  text-align: left;
+}
+
+.report-card hr {
+  border: 0;
+  height: 1px;
+  background: #444;
+  margin: 20px 0;
+}
+
+.highlight-event {
+  background: #355c7d !important;
+  padding: 15px !important;
+  border-radius: 8px;
+  font-style: italic;
+  color: #f8b195 !important;
+  text-align: center !important;
+  font-weight: bold;
+}
+
+@keyframes fadeSlide {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes entryIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

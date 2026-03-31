@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Life Simulator- Report</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="results-screen" class="screen">
+        <h1>You</h1>
+        <div class="report-card">
+            <p><strong>Born:</strong> <span id="res-year"></span></p>
+            <p><strong>Country of Origin:</strong> <span id="res-country"></span></p>
+            <p><strong>Lived until:</strong> Age <span id="res-age"></span></p>
+            <hr>
+            <p><strong>Significant Life Event:</strong></p>
+            <p id="res-event" class="highlight-event"></p>
+        </div>
+        <button class="birth-button" onclick="resetGame()">Play Again</button>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        function showResultsScreen() {
+            document.getElementById("game-screen").style.display = "none";
+            document.getElementById("results-screen").style.display = "block";
+
+            // Retrieve data from localStorage
+            const birthYear = localStorage.getItem("report_birth_year");
+            const country = localStorage.getItem("report_country");
+            const ageAtDeath = localStorage.getItem("report_age_at_death");
+            const significantEvent = localStorage.getItem("report_significant_event");
+
+            // Update the results screen with retrieved data
+            document.getElementById("res-year").textContent = birthYear;
+            document.getElementById("res-country").textContent = country;
+            document.getElementById("res-age").textContent = ageAtDeath;
+            document.getElementById("res-event").textContent = significantEvent;
+        }
+
+        function resetGame() {
+            // Clear localStorage and reload the page to start fresh
+            localStorage.clear();
+            location.reload();
+        }
+
+        window.addEventListener("DOMContentLoaded", () => {
+    const country = localStorage.getItem("report_country");
+    const age = localStorage.getItem("report_age");
+    const year = localStorage.getItem("report_year");
+    const event = localStorage.getItem("report_event");
+
+    if (country && age && event) {
+        document.getElementById("results-screen").style.display = "flex";
+
+        document.getElementById("res-country").textContent = country;
+        document.getElementById("res-age").textContent = age;
+        document.getElementById("res-year").textContent = year;
+        document.getElementById("res-event").textContent = `"${event}"`;
+    }
+});
+    </script>
+</body>
+</html>
