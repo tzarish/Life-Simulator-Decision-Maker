@@ -226,3 +226,20 @@ button {
     transform: translateY(0);
   }
 }
+
+@media screen and (max-width: 900px) {
+  .instructions {
+    position: static;
+    width: 100%;
+    margin: 30px 0 30px 0;
+    transform: none;
+  }
+
+  .screen {
+    width: 100%;
+    left: 0;
+    transform: none;
+  }
+
+  
+}
